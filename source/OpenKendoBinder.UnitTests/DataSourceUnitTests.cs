@@ -126,7 +126,7 @@ namespace OpenKendoBinder.UnitTests
                 {"page", "1"},
                 {"pagesize", "5"},
 
-                {"group[0][field]", "CountryName"},
+                {"group[0][field]", "Country.Name"},
                 {"group[0][dir]", "asc"}
             };
 
@@ -431,7 +431,7 @@ namespace OpenKendoBinder.UnitTests
                 {"page", "1"},
                 {"pagesize", "10"},
 
-                {"group[0][field]", "CompanyName"},
+                {"group[0][field]", "Company.Name"},
                 {"group[0][dir]", "asc"},
                 {"group[0][aggregates][0][field]", "EmployeeNumber"},
                 {"group[0][aggregates][0][aggregate]", "min"},

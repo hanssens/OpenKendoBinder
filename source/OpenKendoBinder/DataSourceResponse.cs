@@ -148,7 +148,11 @@ namespace OpenKendoBinder
             bool hasSortObjects = sort.Any();
 
             // List[0] = LastName as Last
-            var groupByFields = request.GroupObjects.Select(s => string.Format("{0} as {1}", s.Field, s.Field)).ToList();
+            // @hanssens: in case of a navigation property, e.g. 'Company.Name', we should concat it appropriately
+            var groupByFields = request.GroupObjects.Select(s => s.Field.Contains(".")
+                ? s.Field + " as " + s.Field.Replace(".", string.Empty)
+                : s.Field
+            ).ToList();
 
             // new (new (LastName as Last) as GroupByFields)
             var groupByExpressionX = string.Format("new (new ({0}) as GroupByFields)", string.Join(",", groupByFields));
@@ -191,8 +195,14 @@ namespace OpenKendoBinder
             var selectQuery = groupByQuery.Select(selectExpressionBeforeOrderByX);
 
             // Execute the Dynamic Linq "OrderBy"
-            var orderByQuery = selectQuery.OrderBy(string.Join(",", request.GroupObjects
-                .Select(s => string.Format("GroupByFields.{0} {1}", s.Field, s.Direction)).ToList()));
+            var orderByQueryString = string.Join(",", request.GroupObjects
+                .Select(s => string.Format("GroupByFields.{0} {1}",
+                    // @hanssens: fix for navigation properties (e.g. 'Company.Name')
+                    s.Field.Contains(".") ? s.Field.Replace(".", string.Empty) : s.Field,
+                    s.Direction))
+                    .ToList());
+
+            var orderByQuery = selectQuery.OrderBy(orderByQueryString);
 
             // Execute the Dynamic Linq "Select" to get back the TModel objects
             var tempQuery = orderByQuery.Select(selectExpressionAfterOrderByX, typeof(TModel));
@@ -220,9 +230,10 @@ namespace OpenKendoBinder
 
             var kendoGroup = new DataSourceGroup
             {
-                field = groupObject.Field,
+                // @hanssens: hotfix for navigation properties
+                field = groupObject.Field.Replace(".", string.Empty),
                 aggregates = aggregates,
-                value = values[groupObject.Field],
+                value = values[groupObject.Field.Replace(".", string.Empty)],
                 hasSubgroups = !isLast,
             };
 
