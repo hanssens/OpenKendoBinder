@@ -46,14 +46,18 @@
     <Compile Include="MyRoleProvider.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\KendoGridBinderEx.Examples.Business\KendoGridBinderEx.Examples.Business.csproj">
       <Project>{28b83391-37d5-4dff-8a32-6d508fb191b8}</Project>
       <Name>KendoGridBinderEx.Examples.Business</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <ProjectReference Include="..\KendoGridBinderEx.Examples.Infrastructure\KendoGridBinderEx.Examples.Infrastructure.csproj">
+      <Project>{b69f4bed-660d-47b7-891b-eb1cc1421279}</Project>
+      <Name>KendoGridBinderEx.Examples.Infrastructure</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
