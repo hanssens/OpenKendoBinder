@@ -12,7 +12,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{23382819-D5CC-435B-803B-2F054D57A42F}"
 	ProjectSection(SolutionItems) = preProject
 		JetBrains.Annotations.cs = JetBrains.Annotations.cs
-		readme.md = readme.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KendoGridBinderEx", "KendoGridBinderEx\KendoGridBinderEx.csproj", "{B99BDE11-9306-4736-97AC-B6640C342F4E}"
