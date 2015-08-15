@@ -2,11 +2,11 @@
 namespace OpenKendoBinder
 {
     /// <summary>
-    /// KendoGroup
+    /// DataSourceGroup
     /// 
     /// Properties are lowercase to support Kendo UI Grid
     /// </summary>
-    public class KendoGroup
+    public class DataSourceGroup
     {
         // ReSharper disable InconsistentNaming
         public string field { get; set; }

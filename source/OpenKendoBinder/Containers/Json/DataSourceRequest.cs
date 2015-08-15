@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace OpenKendoBinder.Containers.Json
 {
     [DataContract]
-    public class GridRequest
+    public class DataSourceRequest
     {
         [DataMember(Name = "take")]
         public int? Take { get; set; }

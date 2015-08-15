@@ -6,7 +6,7 @@ using OpenKendoBinder.Extensions;
 
 namespace OpenKendoBinder.ModelBinder.Mvc
 {
-    public class KendoGridMvcModelBinder : IModelBinder
+    public class DataSourceModelBinder : IModelBinder
     {
         private HttpRequestBase _request;
 
@@ -20,7 +20,7 @@ namespace OpenKendoBinder.ModelBinder.Mvc
             _request = controllerContext.HttpContext.Request;
             var queryString = GetQueryString();
 
-            var kendoGridRequest = new KendoGridMvcRequest
+            var kendoGridRequest = new DataSourceMvcRequest
             {
                 Take = queryString.GetQueryValue("take", (int?)null),
                 Page = queryString.GetQueryValue("page", (int?)null),

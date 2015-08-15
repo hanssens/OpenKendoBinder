@@ -4,7 +4,7 @@ using OpenKendoBinder.Containers.Json;
 
 namespace OpenKendoBinder
 {
-    public abstract class KendoGridBaseRequest
+    public abstract class BaseDataSourceRequest
     {
         public int? Take { get; set; }
         public int? Skip { get; set; }

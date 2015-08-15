@@ -5,13 +5,13 @@ using OpenKendoBinder.ModelBinder.Api;
 namespace OpenKendoBinder.UnitTests
 {
     [TestFixture]
-    public class GridHelperUnitTests
+    public class DataSourceHelperUnitTests
     {
         [Test]
         public void GridHelper_ParseTest()
         {
             const string jsonString = "{\"take\":10,\"skip\":3,\"page\":1,\"pageSize\":11,\"group\":[],\"aggregate\":[]}";
-            KendoGridApiRequest result = GridHelper.Parse(jsonString);
+            DataSourceApiRequest result = GridHelper.Parse(jsonString);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(null, result.AggregateObjects);
@@ -29,7 +29,7 @@ namespace OpenKendoBinder.UnitTests
         public void GridHelper_ParseGroup()
         {
             const string jsonString = "{\"group\":[]}";
-            KendoGridApiRequest result = GridHelper.Parse(jsonString);
+            DataSourceApiRequest result = GridHelper.Parse(jsonString);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(null, result.AggregateObjects);

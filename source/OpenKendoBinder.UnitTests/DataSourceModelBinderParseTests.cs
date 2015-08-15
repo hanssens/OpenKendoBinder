@@ -6,10 +6,10 @@ using OpenKendoBinder.UnitTests.Helpers;
 namespace OpenKendoBinder.UnitTests
 {
     [TestFixture]
-    public class KendoGridModelBinderParseTests : TestHelper
+    public class DataSourceModelBinderParseTests : TestHelper
     {
         [Test]
-        public void TestParse_KendoGridModelBinder_Page()
+        public void TestParse_KendoDataSourceModelBinder_Page()
         {
             var form = new NameValueCollection
             {
@@ -27,7 +27,7 @@ namespace OpenKendoBinder.UnitTests
         }
 
         [Test]
-        public void TestParse_KendoGridModelBinder_Page_Filter()
+        public void TestParse_KendoDataSourceModelBinder_Page_Filter()
         {
             var form = new NameValueCollection
             {
@@ -66,7 +66,7 @@ namespace OpenKendoBinder.UnitTests
         }
 
         [Test]
-        public void TestParse_KendoGridModelBinder_Page_Filter_DifferentOrder()
+        public void TestParse_KendoDataSourceModelBinder_Page_Filter_DifferentOrder()
         {
             var form = new NameValueCollection
             {
@@ -105,7 +105,7 @@ namespace OpenKendoBinder.UnitTests
         }
 
         [Test]
-        public void TestParse_KendoGridModelBinder_Page_Filter_Sort()
+        public void TestParse_KendoDataSourceModelBinder_Page_Filter_Sort()
         {
             var form = new NameValueCollection
             {
@@ -179,7 +179,7 @@ namespace OpenKendoBinder.UnitTests
 
         //{"take":5,"skip":0,"page":1,"pageSize":5,"filter":{"logic":"and","filters":[{"field":"CompanyName","operator":"eq","value":"A"}]},"group":[]}
         [Test]
-        public void TestParseJson_KendoGridModelBinder_Page_Filter()
+        public void TestParseJson_KendoDataSourceModelBinder_Page_Filter()
         {
             var form = new NameValueCollection
             {
@@ -217,7 +217,7 @@ namespace OpenKendoBinder.UnitTests
 
         //{"take":5,"skip":0,"page":1,"pageSize":5,"sort":[{"field":"FirstName","dir":"asc","compare":null}],"filter":{"logic":"and","filters":[{"field":"CompanyName","operator":"eq","value":"A"}]},"group":[]}
         [Test]
-        public void TestParseJson_KendoGridModelBinder_Page_Filter_Sort()
+        public void TestParseJson_KendoDataSourceModelBinder_Page_Filter_Sort()
         {
             var form = new NameValueCollection
             {
@@ -273,7 +273,7 @@ namespace OpenKendoBinder.UnitTests
         }
 
         [Test]
-        public void TestParse_KendoGridModelBinder_Page_Agggregates()
+        public void TestParse_KendoDataSourceModelBinder_Page_Agggregates()
         {
             var form = new NameValueCollection
             {
@@ -311,25 +311,25 @@ namespace OpenKendoBinder.UnitTests
         }
 
         #region Check helper methods
-        private static void CheckTake(KendoGridBaseRequest gridRequest, int take)
+        private static void CheckTake(BaseDataSourceRequest gridRequest, int take)
         {
             Assert.IsNotNull(gridRequest.Take);
             Assert.AreEqual(take, gridRequest.Take.Value);
         }
 
-        private static void CheckSkip(KendoGridBaseRequest gridRequest, int skip)
+        private static void CheckSkip(BaseDataSourceRequest gridRequest, int skip)
         {
             Assert.IsNotNull(gridRequest.Skip);
             Assert.AreEqual(skip, gridRequest.Skip.Value);
         }
 
-        private static void CheckPage(KendoGridBaseRequest gridRequest, int page)
+        private static void CheckPage(BaseDataSourceRequest gridRequest, int page)
         {
             Assert.IsNotNull(gridRequest.Page);
             Assert.AreEqual(page, gridRequest.Page.Value);
         }
 
-        private static void CheckPageSize(KendoGridBaseRequest gridRequest, int pagesize)
+        private static void CheckPageSize(BaseDataSourceRequest gridRequest, int pagesize)
         {
             Assert.IsNotNull(gridRequest.PageSize);
             Assert.AreEqual(pagesize, gridRequest.PageSize.Value);

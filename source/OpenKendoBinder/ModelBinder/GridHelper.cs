@@ -8,7 +8,7 @@ namespace OpenKendoBinder.ModelBinder
 {
     public static class GridHelper
     {
-        public static T Parse<T>(NameValueCollection queryString) where T : KendoGridBaseRequest, new()
+        public static T Parse<T>(NameValueCollection queryString) where T : BaseDataSourceRequest, new()
         {
             return new T
             {
@@ -24,11 +24,11 @@ namespace OpenKendoBinder.ModelBinder
             };
         }
 
-        public static KendoGridApiRequest Parse(string jsonRequest)
+        public static DataSourceApiRequest Parse(string jsonRequest)
         {
-            var kendoJsonRequest = JsonConvert.DeserializeObject<GridRequest>(jsonRequest);
+            var kendoJsonRequest = JsonConvert.DeserializeObject<DataSourceRequest>(jsonRequest);
 
-            return new KendoGridApiRequest
+            return new DataSourceApiRequest
             {
                 Take = kendoJsonRequest.Take,
                 Page = kendoJsonRequest.Page,

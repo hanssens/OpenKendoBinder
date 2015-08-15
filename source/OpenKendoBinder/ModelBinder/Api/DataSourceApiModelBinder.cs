@@ -6,7 +6,7 @@ using System.Web.Http.ModelBinding;
 
 namespace OpenKendoBinder.ModelBinder.Api
 {
-    public class KendoGridApiModelBinder : IModelBinder
+    public class DataSourceApiModelBinder : IModelBinder
     {
         private NameValueCollection _queryString;
 
@@ -32,7 +32,7 @@ namespace OpenKendoBinder.ModelBinder.Api
             {
                 // Parse the QueryString
                 _queryString = GetQueryString(content);
-                bindingContext.Model = GridHelper.Parse<KendoGridApiRequest>(_queryString);
+                bindingContext.Model = GridHelper.Parse<DataSourceApiRequest>(_queryString);
             }
 
             return true;

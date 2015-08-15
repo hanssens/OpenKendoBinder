@@ -6,7 +6,7 @@ using OpenKendoBinder.Containers;
 namespace OpenKendoBinder
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class KendoGridFilter
+    public class DataSourceFilter
     {
         [JsonProperty(PropertyName = "logic")]
         public string Logic { get; set; }
@@ -21,7 +21,7 @@ namespace OpenKendoBinder
         public string Value { get; set; }
 
         [JsonProperty(PropertyName = "filters")]
-        public List<KendoGridFilter> Filters { get; set; }
+        public List<DataSourceFilter> Filters { get; set; }
 
         public FilterObjectWrapper ToFilterObjectWrapper()
         {

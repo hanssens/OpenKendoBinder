@@ -11,25 +11,25 @@ using OpenKendoBinder.Extensions;
 
 namespace OpenKendoBinder
 {
-    public class KendoGridEx<TModel> : KendoGridEx<TModel, TModel>
+    public class DataSourceResponse<TModel> : DataSourceResponse<TModel, TModel>
     {
-        public KendoGridEx(KendoGridBaseRequest request, IQueryable<TModel> query)
+        public DataSourceResponse(BaseDataSourceRequest request, IQueryable<TModel> query)
             : base(request, query, null, null)
         {
         }
 
-        public KendoGridEx(KendoGridBaseRequest request, IEnumerable<TModel> list)
+        public DataSourceResponse(BaseDataSourceRequest request, IEnumerable<TModel> list)
             : this(request, list.AsQueryable())
         {
         }
 
-        public KendoGridEx(IEnumerable<TModel> list, int totalCount)
+        public DataSourceResponse(IEnumerable<TModel> list, int totalCount)
             : base(list, totalCount)
         {
         }
     }
 
-    public class KendoGridEx<TEntity, TViewModel>
+    public class DataSourceResponse<TEntity, TViewModel>
     {
         private readonly Func<IQueryable<TEntity>, IEnumerable<TViewModel>> _conversion;
         private readonly Dictionary<string, string> _mappings;
@@ -40,7 +40,7 @@ namespace OpenKendoBinder
         public object Aggregates { get; set; }
         public int Total { get; set; }
 
-        public KendoGridEx(KendoGridBaseRequest request,
+        public DataSourceResponse(BaseDataSourceRequest request,
             IQueryable<TEntity> query,
             IEnumerable<string> includes = null,
             Dictionary<string, string> mappings = null,
@@ -92,7 +92,7 @@ namespace OpenKendoBinder
             }
         }
 
-        protected KendoGridEx(KendoGridBaseRequest request, IEnumerable<TEntity> entities,
+        protected DataSourceResponse(BaseDataSourceRequest request, IEnumerable<TEntity> entities,
             Dictionary<string, string> mappings,
             Func<IQueryable<TEntity>, IEnumerable<TViewModel>> conversion
             )
@@ -100,7 +100,7 @@ namespace OpenKendoBinder
         {
         }
 
-        protected KendoGridEx(IEnumerable<TViewModel> list, int totalCount)
+        protected DataSourceResponse(IEnumerable<TViewModel> list, int totalCount)
         {
             Data = list;
             Total = totalCount;
@@ -123,7 +123,7 @@ namespace OpenKendoBinder
             return query.OrderBy(sorting);
         }
 
-        protected object ApplyAggregates(IQueryable<TEntity> query, IList<string> includes, KendoGridBaseRequest request)
+        protected object ApplyAggregates(IQueryable<TEntity> query, IList<string> includes, BaseDataSourceRequest request)
         {
             // In case of average, sum, min or max: convert it to sum(TEntity__.XXX) as sum_XXX
             // In case of count, convert it to count() as count_XXX
@@ -159,7 +159,7 @@ namespace OpenKendoBinder
             return aggregates;
         }
 
-        protected IEnumerable<KendoGroup> ApplyGroupingAndSorting(IQueryable<TEntity> query, IList<string> includes, KendoGridBaseRequest request)
+        protected IEnumerable<DataSourceGroup> ApplyGroupingAndSorting(IQueryable<TEntity> query, IList<string> includes, BaseDataSourceRequest request)
         {
             bool hasAggregates = request.GroupObjects.Any(g => g.AggregateObjects.Any());
             string aggregatesExpression = string.Empty;
@@ -231,8 +231,8 @@ namespace OpenKendoBinder
             // Execute the Dynamic Linq "Select" to get back the TEntity objects
             var tempQuery = orderByQuery.Select(selectExpressionAfterOrderByX, typeof(TEntity));
 
-            // Create a valid List<KendoGroup> object
-            var list = new List<KendoGroup>();
+            // Create a valid List<DataSourceGroup> object
+            var list = new List<DataSourceGroup>();
             foreach (DynamicClass item in tempQuery)
             {
                 var grouping = item.GetPropertyValue<IGrouping<object, object>>("Grouping");
@@ -245,14 +245,14 @@ namespace OpenKendoBinder
             return list;
         }
 
-        private void Process(IEnumerable<GroupObject> groupByFields, IDictionary<string, object> values, IEnumerable<object> grouping, object aggregates, List<KendoGroup> kendoGroups)
+        private void Process(IEnumerable<GroupObject> groupByFields, IDictionary<string, object> values, IEnumerable<object> grouping, object aggregates, List<DataSourceGroup> kendoGroups)
         {
             var groupObjects = groupByFields as IList<GroupObject> ?? groupByFields.ToList();
             bool isLast = groupObjects.Count() == 1;
 
             var groupObject = groupObjects.First();
 
-            var kendoGroup = new KendoGroup
+            var kendoGroup = new DataSourceGroup
             {
                 field = groupObject.Field,
                 aggregates = aggregates,
@@ -270,7 +270,7 @@ namespace OpenKendoBinder
                 var newGroupByFields = new List<GroupObject>(groupObjects);
                 newGroupByFields.Remove(groupObject);
 
-                var newList = new List<KendoGroup>();
+                var newList = new List<DataSourceGroup>();
                 Process(newGroupByFields.ToArray(), values, grouping, aggregates, newList);
                 kendoGroup.items = newList;
             }

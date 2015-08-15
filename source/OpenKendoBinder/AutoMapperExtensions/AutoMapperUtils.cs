@@ -43,11 +43,11 @@ namespace OpenKendoBinder.AutoMapperExtensions
             foreach (var propertyMap in map.GetPropertyMaps().Where(pm => pm.CustomExpression == null))
             {
                 object customResolver = propertyMap.GetFieldValue("_customResolver");
-                if (customResolver is IKendoGridExValueResolver)
+                if (customResolver is IDataSourceValueResolver)
                 {
                     string source = propertyMap.DestinationProperty.Name;
 
-                    var kendoResolver = customResolver as IKendoGridExValueResolver;
+                    var kendoResolver = customResolver as IDataSourceValueResolver;
                     string destination = kendoResolver.GetDestinationProperty();
 
                     if (!mappings.ContainsKey(source))

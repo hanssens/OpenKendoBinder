@@ -89,15 +89,15 @@
     <Compile Include="Entities\EmployeeVM.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\MainCompany.cs" />
-    <Compile Include="GridHelperUnitTests.cs" />
+    <Compile Include="DataSourceHelperUnitTests.cs" />
     <Compile Include="Helpers\FakeController.cs" />
     <Compile Include="Helpers\FakeHttp.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Extensions\NestedPropertyExtensions.cs" />
     <Compile Include="Helpers\TestHelper.cs" />
-    <Compile Include="KendoGridModelBinderParseTests.cs" />
+    <Compile Include="DataSourceModelBinderParseTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="KendoGridExUnitTests.cs" />
+    <Compile Include="DataSourceUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -106,7 +106,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KendoGridBinderEx\OpenKendoBinder.csproj">
+    <ProjectReference Include="..\OpenKendoBinder\OpenKendoBinder.csproj">
       <Project>{b99bde11-9306-4736-97ac-b6640c342f4e}</Project>
       <Name>OpenKendoBinder</Name>
     </ProjectReference>

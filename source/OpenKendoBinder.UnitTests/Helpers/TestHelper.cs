@@ -48,7 +48,7 @@ namespace OpenKendoBinder.UnitTests.Helpers
         }
         #endregion
 
-        protected static KendoGridBaseRequest SetupBinder(NameValueCollection form, NameValueCollection queryString)
+        protected static BaseDataSourceRequest SetupBinder(NameValueCollection form, NameValueCollection queryString)
         {
             var fakeRequest = new FakeRequest("POST", form, queryString ?? new NameValueCollection());
             var httpContext = new FakeContext(fakeRequest);
@@ -57,11 +57,11 @@ namespace OpenKendoBinder.UnitTests.Helpers
             var controllerContext = new ControllerContext(new RequestContext(httpContext, new RouteData()), controller);
             var modelBindingContext = new ModelBindingContext();
 
-            var binder = new KendoGridMvcModelBinder();
+            var binder = new DataSourceModelBinder();
             var model = binder.BindModel(controllerContext, modelBindingContext);
             Assert.IsNotNull(model);
 
-            var gridRequest = model as KendoGridMvcRequest;
+            var gridRequest = model as DataSourceMvcRequest;
             Assert.IsNotNull(gridRequest);
 
             return gridRequest;

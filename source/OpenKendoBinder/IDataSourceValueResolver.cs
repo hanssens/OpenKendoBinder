@@ -1,7 +1,7 @@
 ﻿
 namespace OpenKendoBinder
 {
-    public interface IKendoGridExValueResolver
+    public interface IDataSourceValueResolver
     {
         string GetDestinationProperty();
     }
