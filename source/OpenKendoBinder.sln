@@ -14,9 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		JetBrains.Annotations.cs = JetBrains.Annotations.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KendoGridBinderEx", "KendoGridBinderEx\KendoGridBinderEx.csproj", "{B99BDE11-9306-4736-97AC-B6640C342F4E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenKendoBinder", "OpenKendoBinder\OpenKendoBinder.csproj", "{B99BDE11-9306-4736-97AC-B6640C342F4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KendoGridBinderEx.UnitTests", "KendoGridBinderEx.UnitTests\KendoGridBinderEx.UnitTests.csproj", "{CD4A009C-9133-4A49-BCE0-912FF83E724F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenKendoBinder.UnitTests", "OpenKendoBinder.UnitTests\OpenKendoBinder.UnitTests.csproj", "{CD4A009C-9133-4A49-BCE0-912FF83E724F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
