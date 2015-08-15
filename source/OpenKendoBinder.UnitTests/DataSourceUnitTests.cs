@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Linq.Expressions;
-using AutoMapper;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OpenKendoBinder.QueryableExtensions;
 using OpenKendoBinder.UnitTests.Entities;
-using OpenKendoBinder.UnitTests.Extensions;
 using OpenKendoBinder.UnitTests.Helpers;
 
 namespace OpenKendoBinder.UnitTests
@@ -29,14 +25,13 @@ namespace OpenKendoBinder.UnitTests
 
             var gridRequest = SetupBinder(form, null);
 
-            InitAutoMapper();
             var employees = InitEmployeesWithData().AsQueryable();
-            var KendoDataSource = employees.ToDataSourceResponse<Employee, EmployeeVM>(gridRequest, null, null, null, false);
-            Assert.IsNotNull(KendoDataSource);
+            var response = employees.ToDataSourceResponse(gridRequest);
 
-            Assert.AreEqual(employees.Count(), KendoDataSource.Total);
-            Assert.IsNotNull(KendoDataSource.Data);
-            Assert.AreEqual(5, KendoDataSource.Data.Count());
+            Assert.IsNotNull(response);
+            Assert.AreEqual(employees.Count(), response.Total);
+            Assert.IsNotNull(response.Data);
+            Assert.AreEqual(5, response.Data.Count());
         }
 
         [Test]
@@ -67,11 +62,11 @@ namespace OpenKendoBinder.UnitTests
 
             var employees = employeeList.AsQueryable();
 
-            var KendoDataSource = employees.ToDataSourceResponse<Employee, Employee>(gridRequest, null, null, null, false);
-            Assert.IsNotNull(KendoDataSource);
+            var response = employees.ToDataSourceResponse(gridRequest);
+            Assert.IsNotNull(response);
 
-            Assert.AreEqual(3, KendoDataSource.Total);
-            Assert.IsNotNull(KendoDataSource.Data);
+            Assert.AreEqual(3, response.Total);
+            Assert.IsNotNull(response.Data);
         }
 
         [Test]
@@ -84,20 +79,20 @@ namespace OpenKendoBinder.UnitTests
                 {"page", "1"},
                 {"pagesize", "5"},
                 
-                {"sort[0][field]", "First"},
+                {"sort[0][field]", "FirstName"},
                 {"sort[0][dir]", "asc"},
                 {"sort[1][field]", "Email"},
                 {"sort[1][dir]", "desc"},
 
                 {"filter[filters][0][logic]", "or"},
-                {"filter[filters][0][filters][0][field]", "CompanyName"},
+                {"filter[filters][0][filters][0][field]", "Company.Name"},
                 {"filter[filters][0][filters][0][operator]", "eq"},
                 {"filter[filters][0][filters][0][value]", "A"},
-                {"filter[filters][0][filters][1][field]", "CompanyName"},
+                {"filter[filters][0][filters][1][field]", "Company.Name"},
                 {"filter[filters][0][filters][1][operator]", "contains"},
                 {"filter[filters][0][filters][1][value]", "B"},
                 
-                {"filter[filters][1][field]", "Last"},
+                {"filter[filters][1][field]", "LastName"},
                 {"filter[filters][1][operator]", "contains"},
                 {"filter[filters][1][value]", "s"},
                 {"filter[logic]", "and"}
@@ -105,20 +100,18 @@ namespace OpenKendoBinder.UnitTests
 
             var gridRequest = SetupBinder(form, null);
 
-            InitAutoMapper();
             var employees = InitEmployeesWithData().AsQueryable();
-            var mappings = new Dictionary<string, string> { { "CompanyId", "Company.Id" }, { "CompanyName", "Company.Name" } };
-            var KendoDataSource = employees.ToDataSourceResponse<Employee, EmployeeVM>(gridRequest, null, mappings, null, false);
-            Assert.IsNotNull(KendoDataSource);
+            var response = employees.ToDataSourceResponse(gridRequest);
+            Assert.IsNotNull(response);
 
-            Assert.AreEqual(4, KendoDataSource.Total);
-            Assert.IsNotNull(KendoDataSource.Data);
-            Assert.AreEqual(4, KendoDataSource.Data.Count());
+            Assert.AreEqual(4, response.Total);
+            Assert.IsNotNull(response.Data);
+            Assert.AreEqual(4, response.Data.Count());
 
-            Assert.AreEqual("Bill Smith", KendoDataSource.Data.First().Full);
-            Assert.AreEqual("Jack Smith", KendoDataSource.Data.Last().Full);
+            Assert.AreEqual("Bill Smith", response.Data.First().FullName);
+            Assert.AreEqual("Jack Smith", response.Data.Last().FullName);
 
-            var query = KendoDataSource.AsQueryable();
+            var query = response.AsQueryable();
             Assert.AreEqual("Bill Smith", query.First().FullName);
             Assert.AreEqual("Jack Smith", query.Last().FullName);
         }
@@ -133,7 +126,7 @@ namespace OpenKendoBinder.UnitTests
                 {"page", "1"},
                 {"pagesize", "5"},
 
-                {"group[0][field]", "CountryName"},
+                {"group[0][field]", "Country.Name"},
                 {"group[0][dir]", "asc"}
             };
 
@@ -141,31 +134,30 @@ namespace OpenKendoBinder.UnitTests
             Assert.AreEqual(1, gridRequest.GroupObjects.Count());
             Assert.AreEqual(0, gridRequest.GroupObjects.First().AggregateObjects.Count());
 
-            InitAutoMapper();
+            //var includes = new[] {"Company", "Company.MainCompany", "Country"};
             var employees = InitEmployeesWithData().AsQueryable();
-            var mappings = new Dictionary<string, string> { { "CompanyId", "Company.Id" }, { "CountryName", "Country.Name" } };
-            var KendoDataSource = new DataSourceResponse<Employee, EmployeeVM>(gridRequest, employees, new[] { "Company", "Company.MainCompany", "Country" }, mappings, null, false);
+            var response = new DataSourceResponse<Employee>(gridRequest, employees);
 
-            Assert.IsNull(KendoDataSource.Data);
-            Assert.IsNotNull(KendoDataSource.Groups);
-            var json = JsonConvert.SerializeObject(KendoDataSource.Groups, Formatting.Indented);
+            Assert.IsNull(response.Data);
+            Assert.IsNotNull(response.Groups);
+            var json = JsonConvert.SerializeObject(response.Groups, Formatting.Indented);
             Assert.IsNotNull(json);
 
-            var groups = KendoDataSource.Groups as List<DataSourceGroup>;
+            var groups = response.Groups as List<DataSourceGroup>;
             Assert.IsNotNull(groups);
 
             Assert.AreEqual(2, groups.Count());
-            Assert.AreEqual(employees.Count(), KendoDataSource.Total);
+            Assert.AreEqual(employees.Count(), response.Total);
 
-            var employeesFromFirstGroup = groups.First().items as IEnumerable<EmployeeVM>;
+            var employeesFromFirstGroup = groups.First().items as IEnumerable<Employee>;
             Assert.IsNotNull(employeesFromFirstGroup);
 
             var employeesFromFirstGroupList = employeesFromFirstGroup.ToList();
             Assert.AreEqual(4, employeesFromFirstGroupList.Count);
 
             var testEmployee = employeesFromFirstGroupList.First();
-            Assert.AreEqual("Belgium", testEmployee.CountryName);
-            Assert.AreEqual("B", testEmployee.CompanyName);
+            Assert.AreEqual("Belgium", testEmployee.Country.Name);
+            Assert.AreEqual("B", testEmployee.Company.Name);
         }
 
         [Test]
@@ -194,20 +186,18 @@ namespace OpenKendoBinder.UnitTests
             Assert.IsNull(gridRequest.GroupObjects);
             Assert.AreEqual(5, gridRequest.AggregateObjects.Count());
             
-            InitAutoMapper();
             var employees = InitEmployeesWithData().AsQueryable();
-            var mappings = new Dictionary<string, string> { { "CompanyId", "Company.Id" }, { "CountryName", "Country.Name" } };
-            var KendoDataSource = new DataSourceResponse<Employee, EmployeeVM>(gridRequest, employees, new[] { "Company", "Company.MainCompany", "Country" }, mappings, null, false);
+            var response = new DataSourceResponse<Employee>(gridRequest, employees);
 
-            Assert.IsNull(KendoDataSource.Groups);
-            Assert.IsNotNull(KendoDataSource.Data);
-            Assert.AreEqual(5, KendoDataSource.Data.Count());
+            Assert.IsNull(response.Groups);
+            Assert.IsNotNull(response.Data);
+            Assert.AreEqual(5, response.Data.Count());
 
-            Assert.IsNotNull(KendoDataSource.Aggregates);
-            var json = JsonConvert.SerializeObject(KendoDataSource.Aggregates, Formatting.Indented);
+            Assert.IsNotNull(response.Aggregates);
+            var json = JsonConvert.SerializeObject(response.Aggregates, Formatting.Indented);
             Assert.IsNotNull(json);
 
-            var aggregatesAsDictionary = KendoDataSource.Aggregates as Dictionary<string, Dictionary<string, object>>;
+            var aggregatesAsDictionary = response.Aggregates as Dictionary<string, Dictionary<string, object>>;
             Assert.IsNotNull(aggregatesAsDictionary);
             Assert.AreEqual(1, aggregatesAsDictionary.Keys.Count);
             Assert.AreEqual("Id", aggregatesAsDictionary.Keys.First());
@@ -255,20 +245,18 @@ namespace OpenKendoBinder.UnitTests
             Assert.IsNull(gridRequest.GroupObjects);
             Assert.AreEqual(5, gridRequest.AggregateObjects.Count());
 
-            InitAutoMapper();
             var employees = InitEmployeesWithData().AsQueryable();
-            var mappings = new Dictionary<string, string> { { "CompanyId", "Company.Id" }, { "CountryName", "Country.Name" } };
-            var KendoDataSource = new DataSourceResponse<Employee, EmployeeVM>(gridRequest, employees, new[] { "Company", "Company.MainCompany", "Country" }, mappings, null, false);
+            var response = new DataSourceResponse<Employee>(gridRequest, employees);
 
-            Assert.IsNull(KendoDataSource.Groups);
-            Assert.IsNotNull(KendoDataSource.Data);
-            Assert.AreEqual(0, KendoDataSource.Data.Count());
+            Assert.IsNull(response.Groups);
+            Assert.IsNotNull(response.Data);
+            Assert.AreEqual(0, response.Data.Count());
 
-            Assert.IsNotNull(KendoDataSource.Aggregates);
-            var json = JsonConvert.SerializeObject(KendoDataSource.Aggregates, Formatting.Indented);
+            Assert.IsNotNull(response.Aggregates);
+            var json = JsonConvert.SerializeObject(response.Aggregates, Formatting.Indented);
             Assert.IsNotNull(json);
 
-            var aggregatesAsDictionary = KendoDataSource.Aggregates as Dictionary<string, Dictionary<string, object>>;
+            var aggregatesAsDictionary = response.Aggregates as Dictionary<string, Dictionary<string, object>>;
             Assert.IsNotNull(aggregatesAsDictionary);
             Assert.AreEqual(0, aggregatesAsDictionary.Keys.Count);
         }
@@ -291,33 +279,28 @@ namespace OpenKendoBinder.UnitTests
             Assert.AreEqual(1, gridRequest.GroupObjects.Count());
             Assert.AreEqual(0, gridRequest.GroupObjects.First().AggregateObjects.Count());
 
-            InitAutoMapper();
             var employees = InitEmployees().AsQueryable();
-            var employeeVMs = Mapper.Map<List<EmployeeVM>>(employees.ToList());
-            Assert.IsNotNull(employeeVMs);
+            var response = employees.ToDataSourceResponse(gridRequest);
 
-            var mappings = new Dictionary<string, string> { { "CompanyId", "Company.Id" } };
-            var KendoDataSource = employees.ToDataSourceResponse<Employee, EmployeeVM>(gridRequest, null, mappings, null, false);
-
-            Assert.IsNull(KendoDataSource.Data);
-            Assert.IsNotNull(KendoDataSource.Groups);
-            var json = JsonConvert.SerializeObject(KendoDataSource.Groups, Formatting.Indented);
+            Assert.IsNull(response.Data);
+            Assert.IsNotNull(response.Groups);
+            var json = JsonConvert.SerializeObject(response.Groups, Formatting.Indented);
             Assert.IsNotNull(json);
 
-            var groups = KendoDataSource.Groups as List<DataSourceGroup>;
+            var groups = response.Groups as List<DataSourceGroup>;
             Assert.IsNotNull(groups);
 
             Assert.AreEqual(5, groups.Count());
-            Assert.AreEqual(employees.Count(), KendoDataSource.Total);
+            Assert.AreEqual(employees.Count(), response.Total);
 
-            var employeesFromFirstGroup = groups.First().items as IEnumerable<EmployeeVM>;
+            var employeesFromFirstGroup = groups.First().items as IEnumerable<Employee>;
             Assert.IsNotNull(employeesFromFirstGroup);
 
             var employeesFromFirstGroupList = employeesFromFirstGroup.ToList();
             Assert.AreEqual(1, employeesFromFirstGroupList.Count);
 
             var testEmployee = employeesFromFirstGroupList.First();
-            Assert.IsNull(testEmployee.CountryName);
+            Assert.IsNull(testEmployee.Country);
         }
 
         [Test]
@@ -330,12 +313,12 @@ namespace OpenKendoBinder.UnitTests
                 {"page", "1"},
                 {"pagesize", "5"},
 
-                {"sort[0][field]", "Full"},
+                {"sort[0][field]", "FullName"},
                 {"sort[0][dir]", "asc"},
 
-                {"group[0][field]", "First"},
+                {"group[0][field]", "FirstName"},
                 {"group[0][dir]", "asc"},
-                {"group[0][aggregates][0][field]", "First"},
+                {"group[0][aggregates][0][field]", "FirstName"},
                 {"group[0][aggregates][0][aggregate]", "count"}
             };
 
@@ -343,20 +326,19 @@ namespace OpenKendoBinder.UnitTests
             Assert.AreEqual(1, gridRequest.GroupObjects.Count());
             Assert.AreEqual(1, gridRequest.GroupObjects.First().AggregateObjects.Count());
 
-            InitAutoMapper();
             var employees = InitEmployeesWithData().AsQueryable();
-            var KendoDataSource = employees.ToDataSourceResponse<Employee, EmployeeVM>(gridRequest, null, null, null, false);
+            var response = employees.ToDataSourceResponse(gridRequest);
 
-            Assert.IsNull(KendoDataSource.Data);
-            Assert.IsNotNull(KendoDataSource.Groups);
-            var json = JsonConvert.SerializeObject(KendoDataSource.Groups, Formatting.Indented);
+            Assert.IsNull(response.Data);
+            Assert.IsNotNull(response.Groups);
+            var json = JsonConvert.SerializeObject(response.Groups, Formatting.Indented);
             Assert.IsNotNull(json);
 
-            var groups = KendoDataSource.Groups as List<DataSourceGroup>;
+            var groups = response.Groups as List<DataSourceGroup>;
             Assert.IsNotNull(groups);
 
             Assert.AreEqual(5, groups.Count());
-            Assert.AreEqual(employees.Count(), KendoDataSource.Total);
+            Assert.AreEqual(employees.Count(), response.Total);
         }
 
         [Test]
@@ -369,9 +351,9 @@ namespace OpenKendoBinder.UnitTests
                 {"page", "1"},
                 {"pagesize", "10"},
 
-                {"group[0][field]", "Last"},
+                {"group[0][field]", "LastName"},
                 {"group[0][dir]", "asc"},
-                {"group[0][aggregates][0][field]", "Number"},
+                {"group[0][aggregates][0][field]", "EmployeeNumber"},
                 {"group[0][aggregates][0][aggregate]", "sum"},
             };
 
@@ -379,34 +361,33 @@ namespace OpenKendoBinder.UnitTests
             Assert.AreEqual(1, gridRequest.GroupObjects.Count());
             Assert.AreEqual(1, gridRequest.GroupObjects.First().AggregateObjects.Count());
 
-            InitAutoMapper();
             var employees = InitEmployeesWithData().AsQueryable();
-            var KendoDataSource = employees.ToDataSourceResponse<Employee, EmployeeVM>(gridRequest, null, null, null, false);
+            var response = employees.ToDataSourceResponse(gridRequest);
 
-            Assert.IsNull(KendoDataSource.Data);
-            Assert.IsNotNull(KendoDataSource.Groups);
-            var json = JsonConvert.SerializeObject(KendoDataSource.Groups, Formatting.Indented);
+            Assert.IsNull(response.Data);
+            Assert.IsNotNull(response.Groups);
+            var json = JsonConvert.SerializeObject(response.Groups, Formatting.Indented);
             Assert.IsNotNull(json);
 
-            var groups = KendoDataSource.Groups as List<DataSourceGroup>;
+            var groups = response.Groups as List<DataSourceGroup>;
             Assert.IsNotNull(groups);
 
             Assert.AreEqual(9, groups.Count());
-            Assert.AreEqual(employees.Count(), KendoDataSource.Total);
+            Assert.AreEqual(employees.Count(), response.Total);
 
             var groupBySmith = groups.FirstOrDefault(g => g.value.ToString() == "Smith");
             Assert.IsNotNull(groupBySmith);
 
-            var items = groupBySmith.items as List<EmployeeVM>;
+            var items = groupBySmith.items as List<Employee>;
             Assert.IsNotNull(items);
             Assert.AreEqual(2, items.Count);
-            Assert.AreEqual(2, items.Count(e => e.Last == "Smith"));
+            Assert.AreEqual(2, items.Count(e => e.LastName == "Smith"));
 
             var aggregates = groupBySmith.aggregates as Dictionary<string, Dictionary<string, object>>;
             Assert.IsNotNull(aggregates);
 
-            Assert.IsTrue(aggregates.ContainsKey("Number"));
-            var aggregatesNumber = aggregates["Number"];
+            Assert.IsTrue(aggregates.ContainsKey("EmployeeNumber"));
+            var aggregatesNumber = aggregates["EmployeeNumber"];
             Assert.IsNotNull(aggregatesNumber);
             Assert.AreEqual(1, aggregatesNumber.Count);
 
@@ -450,14 +431,14 @@ namespace OpenKendoBinder.UnitTests
                 {"page", "1"},
                 {"pagesize", "10"},
 
-                {"group[0][field]", "CompanyName"},
+                {"group[0][field]", "Company.Name"},
                 {"group[0][dir]", "asc"},
-                {"group[0][aggregates][0][field]", "Number"},
+                {"group[0][aggregates][0][field]", "EmployeeNumber"},
                 {"group[0][aggregates][0][aggregate]", "min"},
           
                 {"group[1][field]", "LastName"},
                 {"group[1][dir]", "asc"},
-                {"group[1][aggregates][0][field]", "Number"},
+                {"group[1][aggregates][0][field]", "EmployeeNumber"},
                 {"group[1][aggregates][0][aggregate]", "min"},
             };
 
@@ -466,21 +447,19 @@ namespace OpenKendoBinder.UnitTests
             Assert.AreEqual(1, gridRequest.GroupObjects.First().AggregateObjects.Count());
             Assert.AreEqual(1, gridRequest.GroupObjects.Last().AggregateObjects.Count());
 
-            InitAutoMapper();
             var employees = InitEmployeesWithData().AsQueryable();
-            var mappings = new Dictionary<string, string> { { "CompanyId", "Company.Id" }, { "CountryName", "Country.Name" }, { "CompanyName", "Company.Name" } };
-            var KendoDataSource = employees.ToDataSourceResponse<Employee, EmployeeVM>(gridRequest, null, mappings, null, false);
+            var response = employees.ToDataSourceResponse(gridRequest);
 
-            Assert.IsNull(KendoDataSource.Data);
-            Assert.IsNotNull(KendoDataSource.Groups);
-            var json = JsonConvert.SerializeObject(KendoDataSource.Groups, Formatting.Indented);
+            Assert.IsNull(response.Data);
+            Assert.IsNotNull(response.Groups);
+            var json = JsonConvert.SerializeObject(response.Groups, Formatting.Indented);
             Assert.IsNotNull(json);
 
-            var groups = KendoDataSource.Groups as List<DataSourceGroup>;
+            var groups = response.Groups as List<DataSourceGroup>;
             Assert.IsNotNull(groups);
 
             Assert.AreEqual(10, groups.Count());
-            Assert.AreEqual(employees.Count(), KendoDataSource.Total);
+            Assert.AreEqual(employees.Count(), response.Total);
 
             /*
             var groupBySmith = groups.FirstOrDefault(g => g.value.ToString() == "Smith");
@@ -535,26 +514,19 @@ namespace OpenKendoBinder.UnitTests
             Assert.AreEqual(1, gridRequest.GroupObjects.First().AggregateObjects.Count());
             Assert.AreEqual(1, gridRequest.GroupObjects.Last().AggregateObjects.Count());
 
-            InitAutoMapper();
             var employees = InitEmployeesWithData().AsQueryable();
-            var mappings = new Dictionary<string, string>
-            {
-                {"CompanyId", "Company.Id"},
-                {"CountryName", "Country.Name"},
-                {"CompanyName", "Company.Name"}
-            };
-            var KendoDataSource = employees.ToDataSourceResponse<Employee, EmployeeVM>(gridRequest, null, mappings, null, false);
+            var response = employees.ToDataSourceResponse(gridRequest);
 
-            Assert.IsNull(KendoDataSource.Data);
-            Assert.IsNotNull(KendoDataSource.Groups);
-            var json = JsonConvert.SerializeObject(KendoDataSource.Groups, Formatting.Indented);
+            Assert.IsNull(response.Data);
+            Assert.IsNotNull(response.Groups);
+            var json = JsonConvert.SerializeObject(response.Groups, Formatting.Indented);
             Assert.IsNotNull(json);
 
-            var groups = KendoDataSource.Groups as List<DataSourceGroup>;
+            var groups = response.Groups as List<DataSourceGroup>;
             Assert.IsNotNull(groups);
 
             Assert.AreEqual(10, groups.Count());
-            Assert.AreEqual(employees.Count(), KendoDataSource.Total);
+            Assert.AreEqual(employees.Count(), response.Total);
         }
 
         [Test]
@@ -574,21 +546,16 @@ namespace OpenKendoBinder.UnitTests
             var gridRequest = SetupBinder(form, null);
             Assert.IsNull(gridRequest.GroupObjects);
 
-            InitAutoMapper();
             var employees = InitEmployees().AsQueryable();
-            var employeeVMs = Mapper.Map<List<EmployeeVM>>(employees.ToList());
-            Assert.IsNotNull(employeeVMs);
+            var response = employees.ToDataSourceResponse(gridRequest);
 
-            var mappings = new Dictionary<string, string> { { "CompanyId", "Company.Id" } };
-            var KendoDataSource = employees.ToDataSourceResponse<Employee, EmployeeVM>(gridRequest, null, mappings, null, false);
+            Assert.IsNotNull(response);
+            Assert.IsNull(response.Groups);
+            Assert.NotNull(response.Data);
 
-            Assert.IsNotNull(KendoDataSource);
-            Assert.IsNull(KendoDataSource.Groups);
-            Assert.NotNull(KendoDataSource.Data);
-
-            Assert.AreEqual(employees.Count(), KendoDataSource.Total);
-            Assert.IsNotNull(KendoDataSource.Data);
-            Assert.AreEqual(5, KendoDataSource.Data.Count());
+            Assert.AreEqual(employees.Count(), response.Total);
+            Assert.IsNotNull(response.Data);
+            Assert.AreEqual(5, response.Data.Count());
         }
 
         [Test]
@@ -610,21 +577,16 @@ namespace OpenKendoBinder.UnitTests
             var gridRequest = SetupBinder(form, null);
             Assert.IsNull(gridRequest.GroupObjects);
 
-            InitAutoMapper();
             var employees = InitEmployees().AsQueryable();
-            var employeeVMs = Mapper.Map<List<EmployeeVM>>(employees.ToList());
-            Assert.IsNotNull(employeeVMs);
+            var response = employees.ToDataSourceResponse(gridRequest);
 
-            var mappings = new Dictionary<string, string> { { "CompanyId", "Company.Id" } };
-            var KendoDataSource = employees.ToDataSourceResponse<Employee, EmployeeVM>(gridRequest, null, mappings, null, false);
+            Assert.IsNotNull(response);
+            Assert.IsNull(response.Groups);
+            Assert.NotNull(response.Data);
 
-            Assert.IsNotNull(KendoDataSource);
-            Assert.IsNull(KendoDataSource.Groups);
-            Assert.NotNull(KendoDataSource.Data);
-
-            Assert.AreEqual(1, KendoDataSource.Total);
-            Assert.IsNotNull(KendoDataSource.Data);
-            Assert.AreEqual(1, KendoDataSource.Data.Count());
+            Assert.AreEqual(1, response.Total);
+            Assert.IsNotNull(response.Data);
+            Assert.AreEqual(1, response.Data.Count());
         }
 
         [Test]
@@ -645,33 +607,28 @@ namespace OpenKendoBinder.UnitTests
             Assert.AreEqual(1, gridRequest.GroupObjects.Count());
             Assert.AreEqual(0, gridRequest.GroupObjects.First().AggregateObjects.Count());
 
-            InitAutoMapper();
             var employees = InitEmployees().AsQueryable();
-            var employeeVMs = Mapper.Map<List<EmployeeVM>>(employees.ToList());
-            Assert.IsNotNull(employeeVMs);
+            var response = employees.ToDataSourceResponse(gridRequest);
 
-            var mappings = new Dictionary<string, string> { { "CompanyId", "Company.Id" } };
-            var KendoDataSource = employees.ToDataSourceResponse<Employee, EmployeeVM>(gridRequest, null, mappings, null, false);
-
-            Assert.IsNull(KendoDataSource.Data);
-            Assert.IsNotNull(KendoDataSource.Groups);
-            var json = JsonConvert.SerializeObject(KendoDataSource.Groups, Formatting.Indented);
+            Assert.IsNull(response.Data);
+            Assert.IsNotNull(response.Groups);
+            var json = JsonConvert.SerializeObject(response.Groups, Formatting.Indented);
             Assert.IsNotNull(json);
 
-            var groups = KendoDataSource.Groups as List<DataSourceGroup>;
+            var groups = response.Groups as List<DataSourceGroup>;
             Assert.IsNotNull(groups);
 
             Assert.AreEqual(5, groups.Count());
-            Assert.AreEqual(employees.Count(), KendoDataSource.Total);
+            Assert.AreEqual(employees.Count(), response.Total);
 
-            var employeesFromFirstGroup = groups.First().items as IEnumerable<EmployeeVM>;
+            var employeesFromFirstGroup = groups.First().items as IEnumerable<Employee>;
             Assert.IsNotNull(employeesFromFirstGroup);
 
             var employeesFromFirstGroupList = employeesFromFirstGroup.ToList();
             Assert.AreEqual(1, employeesFromFirstGroupList.Count);
 
             var testEmployee = employeesFromFirstGroupList.First();
-            Assert.IsNull(testEmployee.CountryName);
+            Assert.IsNull(testEmployee.Country);
         }
 
         [Test]
@@ -685,41 +642,40 @@ namespace OpenKendoBinder.UnitTests
                 {"page", "1"},
                 {"pagesize", "10"},
 
-                {"group", "[{\"field\":\"LastName\",\"dir\":\"asc\",\"aggregates\":[{\"field\":\"Number\",\"aggregate\":\"sum\"}]}]"}
+                {"group", "[{\"field\":\"LastName\",\"dir\":\"asc\",\"aggregates\":[{\"field\":\"EmployeeNumber\",\"aggregate\":\"sum\"}]}]"}
             };
 
             var gridRequest = SetupBinder(form, null);
             Assert.AreEqual(1, gridRequest.GroupObjects.Count());
             Assert.AreEqual(1, gridRequest.GroupObjects.First().AggregateObjects.Count());
 
-            InitAutoMapper();
             var employees = InitEmployeesWithData().AsQueryable();
-            var KendoDataSource = employees.ToDataSourceResponse<Employee, EmployeeVM>(gridRequest, null, null, null, false);
+            var response = employees.ToDataSourceResponse(gridRequest);
 
-            Assert.IsNull(KendoDataSource.Data);
-            Assert.IsNotNull(KendoDataSource.Groups);
-            var json = JsonConvert.SerializeObject(KendoDataSource.Groups, Formatting.Indented);
+            Assert.IsNull(response.Data);
+            Assert.IsNotNull(response.Groups);
+            var json = JsonConvert.SerializeObject(response.Groups, Formatting.Indented);
             Assert.IsNotNull(json);
 
-            var groups = KendoDataSource.Groups as List<DataSourceGroup>;
+            var groups = response.Groups as List<DataSourceGroup>;
             Assert.IsNotNull(groups);
 
             Assert.AreEqual(9, groups.Count());
-            Assert.AreEqual(employees.Count(), KendoDataSource.Total);
+            Assert.AreEqual(employees.Count(), response.Total);
 
             var groupBySmith = groups.FirstOrDefault(g => g.value.ToString() == "Smith");
             Assert.IsNotNull(groupBySmith);
 
-            var items = groupBySmith.items as List<EmployeeVM>;
+            var items = groupBySmith.items as List<Employee>;
             Assert.IsNotNull(items);
             Assert.AreEqual(2, items.Count);
-            Assert.AreEqual(2, items.Count(e => e.Last == "Smith"));
+            Assert.AreEqual(2, items.Count(e => e.LastName == "Smith"));
 
             var aggregates = groupBySmith.aggregates as Dictionary<string, Dictionary<string, object>>;
             Assert.IsNotNull(aggregates);
 
-            Assert.IsTrue(aggregates.ContainsKey("Number"));
-            var aggregatesNumber = aggregates["Number"];
+            Assert.IsTrue(aggregates.ContainsKey("EmployeeNumber"));
+            var aggregatesNumber = aggregates["EmployeeNumber"];
             Assert.IsNotNull(aggregatesNumber);
             Assert.AreEqual(1, aggregatesNumber.Count);
 
@@ -729,129 +685,10 @@ namespace OpenKendoBinder.UnitTests
             Assert.AreEqual(2003, aggregateSum.Value);
         }
 
-        #region InitAutoMapper
-        private static void InitAutoMapper()
-        {
-            Mapper.CreateMap<Employee, EmployeeVM>()
-               .ForMember(vm => vm.First, opt => opt.MapFrom(m => m.FirstName))
-               .ForMember(vm => vm.Full, opt => opt.MapFrom(m => m.FullName))
-               .ForMember(vm => vm.Last, opt => opt.MapFrom(m => m.LastName))
-               .ForMember(vm => vm.Number, opt => opt.MapFrom(m => m.EmployeeNumber))
-
-               //.ForMember(vm => vm.CompanyId, opt => opt.MapFrom(m => m.Company.Id))
-                //.ForMember(vm => vm.CompanyName, opt => opt.MapFrom(m => m.Company.Name))
-                //.ForMember(vm => vm.MainCompanyName, opt => opt.MapFrom(m => m.Company.MainCompany.Name))
-                //.ForMember(vm => vm.CountryId, opt => opt.MapFrom(m => m.Country.Id))
-                //.ForMember(vm => vm.CountryCode, opt => opt.MapFrom(m => m.Country.Code))
-                //.ForMember(vm => vm.CountryName, opt => opt.MapFrom(m => m.Country.Name))
-
-                .ForMember(vm => vm.CompanyId, opt => opt.ResolveUsing(new NullSafeResolver<Employee, long>(e => e.Company.Id)))
-                /*.ForMember(vm => vm.CompanyName, opt => opt.Ignore())
-                .ForMember(vm => vm.MainCompanyName, opt => opt.Ignore())
-                .ForMember(vm => vm.CountryId, opt => opt.Ignore())
-                .ForMember(vm => vm.CountryCode, opt => opt.Ignore())
-                .ForMember(vm => vm.CountryName, opt => opt.Ignore())*/
-
-
-               //.ForMember(vm => vm.CompanyName, opt => opt.ResolveUsing<CompanyNameResolver>().FromMember(x => x.Company))
-               .ForMember(vm => vm.CompanyName, opt => opt.ResolveUsing(new NullSafeResolver<Employee, string>(e => e.Company.Name)))
-               .ForMember(vm => vm.MainCompanyName, opt => opt.ResolveUsing(new NullSafeResolver<Employee, string>(e => e.Company.MainCompany.Name)))
-               .ForMember(vm => vm.CountryId, opt => opt.ResolveUsing(new NullSafeResolver<Employee, long>(e => e.Country.Id)))
-               .ForMember(vm => vm.CountryCode, opt => opt.ResolveUsing(new NullSafeResolver<Employee, string>(e => e.Country.Code)))
-               .ForMember(vm => vm.CountryName, opt => opt.ResolveUsing(new NullSafeResolver<Employee, string>(e => e.Country.Name)))
-
-               ;
-
-            Mapper.CreateMap<EmployeeVM, Employee>()
-              .ForMember(e => e.Email, opt => opt.MapFrom(vm => vm.Email))
-              .ForMember(e => e.EmployeeNumber, opt => opt.MapFrom(vm => vm.Number))
-              .ForMember(e => e.FirstName, opt => opt.MapFrom(vm => vm.First))
-              .ForMember(e => e.HireDate, opt => opt.MapFrom(vm => vm.HireDate))
-              .ForMember(e => e.LastName, opt => opt.MapFrom(vm => vm.Last))
-              .ForMember(e => e.Company, opt => opt.Ignore())
-              .ForMember(e => e.Country, opt => opt.Ignore())
-              ;
-
-            Mapper.AssertConfigurationIsValid();
-        }
-        #endregion
-
         public interface IKendoResolver
         {
             string GetM();
         }
-
-        public abstract class KendoResolver<TSource, TDestination> : ValueResolver<TSource, TDestination>
-        {
-
-        }
-
-        public class IdResolver : ValueResolver<Company, long>
-        {
-            protected override long ResolveCore(Company source)
-            {
-                return source != null ? source.Id : 0;
-            }
-        }
-
-        public class IdResolver2 : KendoResolver<IEntity, long>, IKendoResolver
-        {
-            public string GetM()
-            {
-                return "xxx";
-            }
-
-            protected override long ResolveCore(IEntity source)
-            {
-                return source != null ? source.Id : 0;
-            }
-        }
-
-        public class NullSafeResolver<TEntity, TResult> : ValueResolver<TEntity, TResult>
-        {
-            private readonly Expression<Func<TEntity, TResult>> _expression;
-
-            public NullSafeResolver(Expression<Func<TEntity, TResult>> expression)
-            {
-                _expression = expression;
-            }
-
-            protected override TResult ResolveCore(TEntity source)
-            {
-                return source.NullSafeGetValue(_expression);
-            }
-        }
-
-        public class CompanyNameResolver : ValueResolver<Company, string>
-        {
-            protected override string ResolveCore(Company source)
-            {
-                return source != null ? source.Name : string.Empty;
-            }
-        }
-
-        public class MainCompanyNameResolver : ValueResolver<Company, string>
-        {
-            protected override string ResolveCore(Company source)
-            {
-                return source.NullSafeGetValue(x => x.MainCompany.Name, null);
-            }
-        }
-
-        public class CountryCodeResolver : ValueResolver<Country, string>
-        {
-            protected override string ResolveCore(Country source)
-            {
-                return source != null ? source.Code : null;
-            }
-        }
-
-        public class CountryNameResolver : ValueResolver<Country, string>
-        {
-            protected override string ResolveCore(Country source)
-            {
-                return source != null ? source.Name : null;
-            }
-        }
+        
     }
 }
