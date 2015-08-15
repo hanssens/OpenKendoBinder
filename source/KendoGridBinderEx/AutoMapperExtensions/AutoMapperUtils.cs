@@ -1,9 +1,9 @@
-﻿using AutoMapper;
-using KendoGridBinderEx.Extensions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
+using OpenKendoBinder.Extensions;
 
-namespace KendoGridBinderEx.AutoMapperExtensions
+namespace OpenKendoBinder.AutoMapperExtensions
 {
     public static class AutoMapperUtils
     {

@@ -4,14 +4,14 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Linq.Expressions;
 using AutoMapper;
-using KendoGridBinderEx.Examples.Business.Extensions;
-using KendoGridBinderEx.QueryableExtensions;
-using KendoGridBinderEx.UnitTests.Entities;
-using KendoGridBinderEx.UnitTests.Helpers;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using OpenKendoBinder.QueryableExtensions;
+using OpenKendoBinder.UnitTests.Entities;
+using OpenKendoBinder.UnitTests.Extensions;
+using OpenKendoBinder.UnitTests.Helpers;
 
-namespace KendoGridBinderEx.UnitTests
+namespace OpenKendoBinder.UnitTests
 {
     [TestFixture]
     public class KendoGridExUnitTests : TestHelper

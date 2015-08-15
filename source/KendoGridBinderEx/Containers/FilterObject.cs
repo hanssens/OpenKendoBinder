@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace KendoGridBinderEx.Containers
+namespace OpenKendoBinder.Containers
 {
     public class FilterObject
     {

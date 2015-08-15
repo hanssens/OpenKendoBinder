@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using KendoGridBinderEx.Containers.Json;
-using KendoGridBinderEx.ModelBinder;
 using NUnit.Framework;
+using OpenKendoBinder.Containers.Json;
+using OpenKendoBinder.ModelBinder;
 
-namespace KendoGridBinderEx.UnitTests
+namespace OpenKendoBinder.UnitTests
 {
     [TestFixture]
     class AggregateHelperUnitTests

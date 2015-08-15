@@ -1,10 +1,10 @@
 ﻿using System.Collections.Specialized;
-using KendoGridBinderEx.Containers.Json;
-using KendoGridBinderEx.Extensions;
-using KendoGridBinderEx.ModelBinder.Api;
 using Newtonsoft.Json;
+using OpenKendoBinder.Containers.Json;
+using OpenKendoBinder.Extensions;
+using OpenKendoBinder.ModelBinder.Api;
 
-namespace KendoGridBinderEx.ModelBinder
+namespace OpenKendoBinder.ModelBinder
 {
     public static class GridHelper
     {

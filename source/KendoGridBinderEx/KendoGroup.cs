@@ -1,5 +1,5 @@
 ﻿
-namespace KendoGridBinderEx
+namespace OpenKendoBinder
 {
     /// <summary>
     /// KendoGroup

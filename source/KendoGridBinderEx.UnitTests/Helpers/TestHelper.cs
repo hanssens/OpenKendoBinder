@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Web.Mvc;
 using System.Web.Routing;
-using KendoGridBinderEx.ModelBinder.Mvc;
-using KendoGridBinderEx.UnitTests.Entities;
 using NUnit.Framework;
+using OpenKendoBinder.ModelBinder.Mvc;
+using OpenKendoBinder.UnitTests.Entities;
 
-namespace KendoGridBinderEx.UnitTests.Helpers
+namespace OpenKendoBinder.UnitTests.Helpers
 {
     public class TestHelper
     {

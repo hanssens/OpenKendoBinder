@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using KendoGridBinderEx.Containers;
 using Newtonsoft.Json;
+using OpenKendoBinder.Containers;
 
-namespace KendoGridBinderEx
+namespace OpenKendoBinder
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class KendoGridFilter

@@ -1,4 +1,4 @@
-﻿namespace KendoGridBinderEx.Containers
+﻿namespace OpenKendoBinder.Containers
 {
     public class SortObject
     {

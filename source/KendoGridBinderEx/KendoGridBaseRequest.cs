@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using KendoGridBinderEx.Containers;
-using KendoGridBinderEx.Containers.Json;
+using OpenKendoBinder.Containers;
+using OpenKendoBinder.Containers.Json;
 
-namespace KendoGridBinderEx
+namespace OpenKendoBinder
 {
     public abstract class KendoGridBaseRequest
     {

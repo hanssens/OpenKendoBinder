@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace KendoGridBinderEx.Containers.Json
+namespace OpenKendoBinder.Containers.Json
 {
     /// <summary>
     /// This class maps 1 : 1 to JSON Sort

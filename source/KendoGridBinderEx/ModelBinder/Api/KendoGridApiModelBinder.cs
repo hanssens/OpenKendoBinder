@@ -4,7 +4,7 @@ using System.Web;
 using System.Web.Http.Controllers;
 using System.Web.Http.ModelBinding;
 
-namespace KendoGridBinderEx.ModelBinder.Api
+namespace OpenKendoBinder.ModelBinder.Api
 {
     public class KendoGridApiModelBinder : IModelBinder
     {

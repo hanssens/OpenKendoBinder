@@ -1,7 +1,7 @@
 ﻿using System;
 using PropertyTranslator;
 
-namespace KendoGridBinderEx.UnitTests.Entities
+namespace OpenKendoBinder.UnitTests.Entities
 {
     public class Employee : Entity
     {

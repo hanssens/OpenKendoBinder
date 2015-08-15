@@ -1,4 +1,4 @@
-﻿namespace KendoGridBinderEx.UnitTests.Entities
+﻿namespace OpenKendoBinder.UnitTests.Entities
 {
     public class MainCompany : Entity
     {

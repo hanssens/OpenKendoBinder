@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace KendoGridBinderEx.Extensions
+namespace OpenKendoBinder.Extensions
 {
     /// <summary>
     /// http://dotnetfollower.com/wordpress/2012/12/c-how-to-set-or-get-value-of-a-private-or-internal-property-through-the-reflection/

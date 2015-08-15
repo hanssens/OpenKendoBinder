@@ -2,9 +2,9 @@
 using System.Collections.Specialized;
 using System.Web;
 using System.Web.Mvc;
-using KendoGridBinderEx.Extensions;
+using OpenKendoBinder.Extensions;
 
-namespace KendoGridBinderEx.ModelBinder.Mvc
+namespace OpenKendoBinder.ModelBinder.Mvc
 {
     public class KendoGridMvcModelBinder : IModelBinder
     {

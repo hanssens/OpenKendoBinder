@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using KendoGridBinderEx.Containers.Json;
-using KendoGridBinderEx.ModelBinder;
-using KendoGridBinderEx.ModelBinder.Api;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using OpenKendoBinder.ModelBinder;
+using OpenKendoBinder.ModelBinder.Api;
 
-namespace KendoGridBinderEx.UnitTests
+namespace OpenKendoBinder.UnitTests
 {
     [TestFixture]
     public class GridHelperUnitTests

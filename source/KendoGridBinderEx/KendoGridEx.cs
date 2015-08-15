@@ -4,12 +4,12 @@ using System.Linq;
 using System.Linq.Dynamic;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using KendoGridBinderEx.AutoMapperExtensions;
-using KendoGridBinderEx.Containers;
-using KendoGridBinderEx.Containers.Json;
-using KendoGridBinderEx.Extensions;
+using OpenKendoBinder.AutoMapperExtensions;
+using OpenKendoBinder.Containers;
+using OpenKendoBinder.Containers.Json;
+using OpenKendoBinder.Extensions;
 
-namespace KendoGridBinderEx
+namespace OpenKendoBinder
 {
     public class KendoGridEx<TModel> : KendoGridEx<TModel, TModel>
     {

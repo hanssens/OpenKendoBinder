@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KendoGridBinderEx.QueryableExtensions
+namespace OpenKendoBinder.QueryableExtensions
 {
     public static class EnumerableExtensions
     {

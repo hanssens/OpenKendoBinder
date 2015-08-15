@@ -1,5 +1,5 @@
 ﻿
-namespace KendoGridBinderEx
+namespace OpenKendoBinder
 {
     public interface IKendoGridExValueResolver
     {

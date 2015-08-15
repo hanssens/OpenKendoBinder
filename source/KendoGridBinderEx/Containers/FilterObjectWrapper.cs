@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace KendoGridBinderEx.Containers
+namespace OpenKendoBinder.Containers
 {
     public class FilterObjectWrapper
     {

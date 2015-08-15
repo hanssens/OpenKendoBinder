@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using KendoGridBinderEx.Containers;
-using KendoGridBinderEx.Containers.Json;
 using Newtonsoft.Json;
+using OpenKendoBinder.Containers;
+using OpenKendoBinder.Containers.Json;
 
-namespace KendoGridBinderEx.ModelBinder
+namespace OpenKendoBinder.ModelBinder
 {
     public static class SortHelper
     {

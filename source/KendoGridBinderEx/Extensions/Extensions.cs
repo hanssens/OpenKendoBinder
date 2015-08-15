@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Dynamic;
 
-namespace KendoGridBinderEx.Extensions
+namespace OpenKendoBinder.Extensions
 {
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]

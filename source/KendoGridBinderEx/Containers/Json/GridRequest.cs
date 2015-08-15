@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace KendoGridBinderEx.Containers.Json
+namespace OpenKendoBinder.Containers.Json
 {
     [DataContract]
     public class GridRequest

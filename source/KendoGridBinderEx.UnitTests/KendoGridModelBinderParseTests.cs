@@ -1,9 +1,9 @@
 ﻿using System.Collections.Specialized;
 using System.Linq;
-using KendoGridBinderEx.UnitTests.Helpers;
 using NUnit.Framework;
+using OpenKendoBinder.UnitTests.Helpers;
 
-namespace KendoGridBinderEx.UnitTests
+namespace OpenKendoBinder.UnitTests
 {
     [TestFixture]
     public class KendoGridModelBinderParseTests : TestHelper

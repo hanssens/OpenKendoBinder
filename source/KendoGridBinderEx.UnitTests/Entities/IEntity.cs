@@ -1,5 +1,5 @@
 ﻿
-namespace KendoGridBinderEx.UnitTests.Entities
+namespace OpenKendoBinder.UnitTests.Entities
 {
     public interface IEntity
     {

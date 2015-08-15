@@ -2,10 +2,10 @@
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
-using KendoGridBinderEx.Containers.Json;
 using Newtonsoft.Json;
+using OpenKendoBinder.Containers.Json;
 
-namespace KendoGridBinderEx.ModelBinder
+namespace OpenKendoBinder.ModelBinder
 {
     public static class AggregateHelper
     {

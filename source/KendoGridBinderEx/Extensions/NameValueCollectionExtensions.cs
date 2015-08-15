@@ -2,7 +2,7 @@
 using System.Collections.Specialized;
 using System.Linq;
 
-namespace KendoGridBinderEx.Extensions
+namespace OpenKendoBinder.Extensions
 {
     public static class NameValueCollectionExtensions
     {

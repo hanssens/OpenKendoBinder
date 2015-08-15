@@ -1,6 +1,6 @@
 ﻿using System.Web.Http.ModelBinding;
 
-namespace KendoGridBinderEx.ModelBinder.Api
+namespace OpenKendoBinder.ModelBinder.Api
 {
     [ModelBinder(typeof(KendoGridApiModelBinder))]
     public class KendoGridApiRequest : KendoGridBaseRequest
